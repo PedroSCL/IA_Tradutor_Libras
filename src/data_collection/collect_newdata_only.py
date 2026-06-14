@@ -108,16 +108,16 @@ def collect_new_only():
 
             print(f"\n{'='*50}")
             print(f"  Sinal NOVO: {cls.upper()}  ({cls_idx + 1}/{len(new_classes)})")
-            print(f"  Gravando sequências 0 → {SEQUENCES_PER_CLASS - 1}")
+            print(f"  Gravando sequências 0 → 69")
             print(f"{'='*50}")
 
-            for seq in range(SEQUENCES_PER_CLASS):
+            for seq in range(70):
                 # Contagem regressiva
                 for countdown in range(3, 0, -1):
                     ret, frame = cap.read()
                     if not ret:
                         break
-                    cv2.putText(frame, f"SINAL: {cls.upper()}  Seq {seq+1}/{SEQUENCES_PER_CLASS}",
+                    cv2.putText(frame, f"SINAL: {cls.upper()}  Seq {seq+1}/{70}",
                                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
                     cv2.putText(frame, f"Iniciando em {countdown}...",
                                 (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)

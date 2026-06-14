@@ -30,10 +30,10 @@ mp_drawing  = mp.solutions.drawing_utils
 
 # ── Configure aqui ─────────────────────────────────────────────────────────
 # Sinais que você quer completar
-SINAIS_ALVO = ["cachorro", "casa", "desculpa", "obrigado","ajuda"]
+SINAIS_ALVO = ["desculpa"]
 
 # Quantidade de sequências que cada sinal deve ter no total
-TARGET_SEQUENCES = 70
+TARGET_SEQUENCES = 100
 # ───────────────────────────────────────────────────────────────────────────
 
 

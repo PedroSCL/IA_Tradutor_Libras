@@ -140,6 +140,7 @@ def train():
 
     model = build_model()
     model.summary()
+    
 
     # Callbacks úteis para controle de overfitting e salvamento do melhor modelo
     checkpoint_path = os.path.join(MODELS_DIR, "best_model.keras")

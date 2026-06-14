@@ -70,6 +70,7 @@ SPOKEN_TEXT = {
     "desculpa": "Desculpa",
     "ajuda":    "Ajuda",
     "obrigado": "Obrigado",
+    "precisar": "Precisar",
     "sapo":     "Sapo",
     "vacina":   "Vacina",
 }
