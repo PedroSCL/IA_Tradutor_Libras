@@ -16,10 +16,10 @@ for d in [DATA_RAW, DATA_PROCESSED, MODELS_DIR, REPORTS_DIR, FIGURES_DIR]:
     os.makedirs(d, exist_ok=True)
 
 # ── Sinais / Classes ────────────────────────────────────────────────────────
-CLASSES = sorted([
-    d for d in os.listdir(DATA_RAW)
-    if os.path.isdir(os.path.join(DATA_RAW, d))
-])
+CLASSES = [
+    "abacaxi", "ajuda", "amarelo", "cachorro", "casa",
+    "cinco", "desculpa", "obrigado", "precisar", "sapo", "vacina"
+]
 
 NUM_CLASSES = len(CLASSES)
 
