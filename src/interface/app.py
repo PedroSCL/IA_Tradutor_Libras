@@ -20,6 +20,19 @@ import sys
 import time
 from collections import deque, Counter
 
+import sys
+
+def get_base_path():
+    """Retorna o caminho base correto tanto para .exe quanto para .py"""
+    if getattr(sys, 'frozen', False):
+        # Rodando como .exe
+        return os.path.dirname(sys.executable)
+    else:
+        # Rodando como script normal
+        return os.path.join(os.path.dirname(__file__), "..", "..")
+
+BASE_PATH = get_base_path()
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from config import (
     CLASSES, MODELS_DIR, MODEL_FILENAME,
@@ -172,9 +185,9 @@ def run():
             ESPACO - forçar fala do sinal atual
     """
         
-    model_path = os.path.join(MODELS_DIR, MODEL_FILENAME)
+    model_path = os.path.join(BASE_PATH, "models", MODEL_FILENAME)
     if not os.path.exists(model_path):
-        model_path = os.path.join(MODELS_DIR, "best_model.keras")
+        model_path = os.path.join(BASE_PATH, "models", "best_model.keras")
         if not os.path.exists(model_path):
             print("[ERRO] Modelo não encontrado. Execute primeiro: python src/model/train.py")
             sys.exit(1)

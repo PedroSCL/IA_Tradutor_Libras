@@ -4,94 +4,142 @@ Projeto de Inteligência Artificial capaz de reconhecer sinais em Libras utiliza
 
 ---
 
-# 📌 Objetivo
+## 📌 Objetivo
 
 Desenvolver um protótipo funcional que:
 
-- capture movimentos pela câmera;
-- extraia landmarks corporais e das mãos com MediaPipe;
-- utilize uma rede neural LSTM para reconhecer sinais;
-- converta o resultado em texto e áudio (Text-to-Speech).
+- capture movimentos pela câmera em tempo real;
+- extraia landmarks corporais e das mãos com MediaPipe Holistic;
+- utilize uma rede neural LSTM para reconhecer sinais de Libras;
+- converta o resultado em texto e áudio (Text-to-Speech) em português.
 
 ---
 
-# 🧠 Pipeline da IA
+## 🏆 Resultados
+
+| Métrica | Valor |
+|---|---|
+| Acurácia no teste | **97%** |
+| Sinais reconhecidos | **11 sinais** |
+| Total de amostras | **770 sequências** |
+| Frames por sequência | **60 frames** |
+
+---
+
+## 🧠 Pipeline da IA
 
 ```text
-Câmera → MediaPipe → Landmarks → LSTM → Texto → Áudio
+Câmera → MediaPipe Holistic → Landmarks (225 features/frame) → Buffer (60 frames) → LSTM → Texto → Áudio
 ```
 
 ---
 
-# 📂 Estrutura do Projeto
+## 🧾 Sinais Suportados
+
+| Sinal | Descrição |
+|---|---|
+| **Abacaxi** | Mão em garra com movimento rotacional |
+| **Ajuda** | Punho fechado sobre palma aberta, movimento para cima |
+| **Amarelo** | Letra A com movimento lateral |
+| **Cachorro** | Estalo de dedos chamando o animal |
+| **Casa** | Mãos formando o telhado de uma casa |
+| **Cinco** | Mão aberta com 5 dedos esticados |
+| **Desculpa** | Mão fechada em movimento circular no peito |
+| **Obrigado** | Mão aberta toca os lábios e move para frente |
+| **Precisar** | Dedo indicador aponta e faz movimento para baixo |
+| **Sapo** | Dois dedos imitando a boca de um sapo |
+| **Vacina** | Simula aplicação de injeção no braço |
+
+---
+
+## 🧬 Arquitetura do Modelo
+
+```text
+Input (60, 225)
+    ↓
+LSTM (64 unidades, return_sequences=True)
+    ↓
+BatchNormalization + Dropout (30%)
+    ↓
+LSTM (128 unidades, return_sequences=True)
+    ↓
+BatchNormalization + Dropout (30%)
+    ↓
+LSTM (64 unidades)
+    ↓
+Dropout (30%)
+    ↓
+Dense (64, ReLU)
+    ↓
+Dropout (15%)
+    ↓
+Dense (11, Softmax) → probabilidade de cada sinal
+```
+
+---
+
+## 📂 Estrutura do Projeto
 
 ```text
 libras_tradutor/
 ├── data/
-│   ├── raw/                  # Dados brutos (não incluídos)
-│   ├── videos/               # Vídeos originais (não incluídos)
-│   └── processed/            # Dados processados (.npy)
+│   ├── raw/                  # Landmarks extraídos por sinal (não incluídos)
+│   └── processed/            # X.npy e y.npy prontos para treino
 │
 ├── src/
-│   ├── data_collection/      # Coleta de dados
-│   ├── preprocessing/        # Extração de landmarks
-│   ├── model/                # Treinamento da LSTM
-│   ├── evaluation/           # Avaliação do modelo
-│   └── interface/            # Interface em tempo real
+│   ├── data_collection/
+│   │   ├── collect_data.py           # Coleta pela webcam (adiciona sem sobrescrever)
+│   │   ├── collect_new_only.py       # Grava apenas sinais novos sem landmarks
+│   │   └── collect_until_target.py   # Completa sinais até quantidade alvo
+│   ├── preprocessing/
+│   │   ├── process_videos.py         # Extrai landmarks de vídeos .mp4
+│   │   └── extract_landmarks.py      # Monta X.npy e y.npy
+│   ├── model/
+│   │   └── train.py                  # Treina o modelo LSTM
+│   ├── evaluation/
+│   │   └── evaluate.py               # Avalia acurácia e matriz de confusão
+│   └── interface/
+│       └── app.py                    # Interface em tempo real com TTS
 │
-├── models/                   # Modelos treinados
-├── notebooks/                # Análises exploratórias
-├── reports/                  # Relatórios e figuras
+├── models/                   # Modelo treinado (.keras)
+├── reports/figures/          # Gráficos de treinamento e matriz de confusão
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-# ⚙️ Requisitos
+## ⚙️ Requisitos
 
-- Python 3.11+
+- Python 3.11
 - Webcam
-- Windows/Linux
+- Windows (recomendado) / Linux
+- Caminho de instalação curto (ex: `C:\libras\`) devido ao TensorFlow no Windows
 
 ---
 
-# 🚀 Instalação Completa
+## 🚀 Instalação
 
-## 1. Clone o repositório
+### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/SEUUSUARIO/libras-tradutor.git
+git clone https://github.com/PedroSCL/IA_Tradutor_Libras.git
+cd IA_Tradutor_Libras
 ```
 
----
-
-## 2. Entre na pasta do projeto
-
-```bash
-cd libras-tradutor
-```
+> ⚠️ **Windows:** extraia em um caminho curto como `C:\libras\` para evitar erros de Long Path com o TensorFlow.
 
 ---
 
-# 🐍 Criando o Ambiente Virtual (venv)
+### 2. Crie e ative o ambiente virtual
 
-## Windows (PowerShell)
-
-```bash
+**Windows:**
+```powershell
 python -m venv .venv311
-```
-
-Ative:
-
-```bash
 .venv311\Scripts\activate
 ```
 
----
-
-## Linux / Mac
-
+**Linux/Mac:**
 ```bash
 python3 -m venv .venv311
 source .venv311/bin/activate
@@ -99,89 +147,60 @@ source .venv311/bin/activate
 
 ---
 
-# 📦 Instalar Dependências
-
-Com o ambiente virtual ativado:
+### 3. Instale as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
 ---
-# 📥 Dados Processados
+
+## 📥 Dados Processados
 
 Os arquivos de treinamento não estão incluídos no repositório devido ao tamanho.
 
-Baixe os arquivos abaixo:
+Baixe os arquivos abaixo e coloque em `data/processed/`:
 
-- X.npy
-- y.npy
+- `X.npy`
+- `y.npy`
 
-Link:
-https://drive.google.com/drive/folders/11kP-HvVccio20pZzreGlBPeQHD-F3HJp?usp=sharing
+🔗 [Download — Google Drive](https://drive.google.com/drive/folders/11kP-HvVccio20pZzreGlBPeQHD-F3HJp?usp=sharing)
 
-Depois coloque os arquivos em:
+---
 
-```text
-data/processed/
+## 🧪 Como Executar
+
+### 1. Extrair landmarks de vídeos (se tiver vídeos .mp4)
+
+```bash
+python src/preprocessing/process_videos.py
 ```
 
----
-
-# 🧪 Como Executar
-
----
-
-## 1. Coletar dados
-
-Captura vídeos/imagens pela câmera.
+### 2. Coletar dados pela webcam
 
 ```bash
 python src/data_collection/collect_data.py
 ```
 
----
-
-## 2. Extrair landmarks
-
-Converte vídeos/imagens em landmarks numéricos utilizando MediaPipe.
+### 3. Montar o dataset
 
 ```bash
 python src/preprocessing/extract_landmarks.py
 ```
 
-Os arquivos gerados serão:
-
-```text
-data/processed/X.npy
-data/processed/y.npy
-```
-
----
-
-## 3. Treinar o modelo LSTM
+### 4. Treinar o modelo
 
 ```bash
 python src/model/train.py
 ```
 
-O modelo treinado será salvo em:
-
-```text
-models/
-```
-
----
-
-## 4. Avaliar o modelo
+### 5. Avaliar o modelo
 
 ```bash
 python src/evaluation/evaluate.py
 ```
 
----
-
-## 5. Executar a interface em tempo real
+### 6. Executar a interface em tempo real
 
 ```bash
 python src/interface/app.py
@@ -189,56 +208,63 @@ python src/interface/app.py
 
 ---
 
-# 🧾 Sinais Suportados
+## 🎮 Controles da Interface
 
-| Sinal | Label |
-|-------|-------|
-| Olá | ola |
-| Obrigado | obrigado |
-| Água | agua |
-| Preciso de ajuda | ajuda |
-| Sim | sim |
-| Não | nao |
+| Tecla | Ação |
+|---|---|
+| `Q` | Sair |
+| `R` | Resetar buffer de frames |
+| `ESPAÇO` | Forçar fala do último sinal detectado |
 
 ---
 
-# 🛠 Tecnologias Utilizadas
+## 🛡️ Filtros Anti-Falso-Positivo
 
-- TensorFlow / Keras
-- MediaPipe
-- OpenCV
-- NumPy
-- scikit-learn
-- Matplotlib
-- pyttsx3 / gTTS
+O sistema usa três camadas de filtro para evitar predições erradas:
 
----
-
-# 📊 Modelo Utilizado
-
-O projeto utiliza uma rede neural recorrente do tipo LSTM (Long Short-Term Memory), adequada para reconhecimento de padrões temporais em sequências de landmarks extraídos dos sinais em Libras.
+| Filtro | Configuração | Descrição |
+|---|---|---|
+| Detecção de mãos | `MIN_HAND_FRAMES = 50` | Só prediz se houver mãos em 50+ dos 60 frames |
+| Votação | `VOTES_REQUIRED = 3` | Mesmo sinal deve aparecer 3 vezes seguidas |
+| Threshold | `PREDICTION_THRESHOLD = 0.97` | Confiança mínima de 97% |
+| Cooldown | `SPEAK_COOLDOWN = 4s` | Aguarda 4s antes de repetir o mesmo sinal |
 
 ---
 
-# 📌 Observações
+## 🛠️ Tecnologias Utilizadas
 
-- As pastas `data/raw/` e `data/videos/` não estão incluídas devido ao tamanho elevado dos arquivos.
-- O ambiente virtual `.venv311/` também não é incluído no repositório.
-- O modelo pode ser retreinado utilizando novos dados e landmarks.
-
----
-
-# 📚 Referências
-
-- MediaPipe
-- TensorFlow
-- OpenCV
-- IA Libras
-- Hand Talk
+| Tecnologia | Versão | Uso |
+|---|---|---|
+| TensorFlow / Keras | 2.19.1 | Modelo LSTM |
+| MediaPipe | 0.10.14 | Extração de landmarks |
+| OpenCV | 4.8.1.78 | Captura de câmera |
+| NumPy | 1.26.4 | Manipulação de arrays |
+| Pandas | 2.2.2 | Gerenciamento do dataset |
+| scikit-learn | 1.4.2 | Divisão treino/teste |
+| gTTS | 2.5.4 | Síntese de voz (Google) |
+| pyttsx3 | 2.99 | Síntese de voz (offline) |
+| Matplotlib / Seaborn | — | Gráficos e visualizações |
 
 ---
 
-# 👨‍💻 Autor
+## 📊 Dataset
 
-Pedro Henrique  
+- **Fonte principal:** [MINDS-Libras (UFMG)](https://www.kaggle.com/datasets/j0aopsantos/minds-libras) — vídeos gravados em estúdio com múltiplos sinalizadores
+- **Complemento:** sequências gravadas pela webcam do próprio ambiente para melhorar o reconhecimento em tempo real
+- **Total:** 770 sequências balanceadas (70 por sinal)
+
+---
+
+## 📚 Referências
+
+- [MediaPipe — Google](https://mediapipe.dev)
+- [TensorFlow](https://tensorflow.org)
+- [MINDS-Libras — UFMG](https://www.kaggle.com/datasets/j0aopsantos/minds-libras)
+- [OpenCV](https://opencv.org)
+
+---
+
+## 👨‍💻 Autor
+
+**Pedro Henrique**  
 Projeto acadêmico desenvolvido para a disciplina de Inteligência Artificial.
