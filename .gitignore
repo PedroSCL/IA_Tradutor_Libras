@@ -29,3 +29,8 @@ data/processed/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# PyInstaller
+dist/
+build/
+*.specgit rm -r --cached dist/ build/ Tradutor_Libras.spec
