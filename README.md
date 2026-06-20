@@ -36,19 +36,19 @@ Câmera → MediaPipe Holistic → Landmarks (225 features/frame) → Buffer (60
 
 ## 🧾 Sinais Suportados
 
-| Sinal | Descrição |
-|---|---|
-| **Abacaxi** | Mão em garra com movimento rotacional |
-| **Ajuda** | Punho fechado sobre palma aberta, movimento para cima |
-| **Amarelo** | Letra A com movimento lateral |
-| **Cachorro** | Estalo de dedos chamando o animal |
-| **Casa** | Mãos formando o telhado de uma casa |
-| **Cinco** | Mão aberta com 5 dedos esticados |
-| **Desculpa** | Mão fechada em movimento circular no peito |
-| **Obrigado** | Mão aberta toca os lábios e move para frente |
-| **Precisar** | Dedo indicador aponta e faz movimento para baixo |
-| **Sapo** | Dois dedos imitando a boca de um sapo |
-| **Vacina** | Simula aplicação de injeção no braço |
+| Sinal
+|---|
+| **Abacaxi**
+| **Ajuda**
+| **Amarelo**
+| **Cachorro**
+| **Casa**
+| **Cinco** 
+| **Desculpa**
+| **Obrigado**
+| **Precisar** 
+| **Sapo**
+| **Vacina** 
 
 ---
 
